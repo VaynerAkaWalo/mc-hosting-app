@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  background-color: var(--color-zinc-400);
+  border-color: var(--color-zinc-500);
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  border-left-width: 2px;
+  border-top-width: 2px;
+
+
+}

@@ -1,3 +1,6 @@
+import {useState} from "react";
+import {Notification} from "./Notification.tsx";
+
 interface ServerReqeust {
   name: string
   image: string
@@ -13,6 +16,8 @@ interface ServerProps {
 }
 
 export function Server({id, active, name, ip, remainingTime}: ServerProps) {
+  const [showNotification, setShowNotification] = useState<boolean>(false)
+
   const provisionServer = () => {
     const request: ServerReqeust = {
       name: "server-" + id,
@@ -24,6 +29,9 @@ export function Server({id, active, name, ip, remainingTime}: ServerProps) {
       method: "POST",
       body: JSON.stringify(request)
     })
+
+    setShowNotification(true)
+    setTimeout(() => setShowNotification(false), 2000)
   }
 
   const inactive = () => {
@@ -60,6 +68,7 @@ export function Server({id, active, name, ip, remainingTime}: ServerProps) {
     <div className="border-zinc-500 bg-zinc-400 border-t-4 border-l-4 border-b-8 border-r-8 w-full h-full my-3">
       {!active && inactive()}
       {active && activeServer()}
+      {showNotification && <Notification message={"Your server will be started shortly"}/>}
     </div>
   )
 }

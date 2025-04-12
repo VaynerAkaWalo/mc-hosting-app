@@ -38,6 +38,10 @@ export function ServerList() {
 
   useEffect(() => {
     loadServers()
+    const loader = setInterval(loadServers, 10000)
+    return () => {
+      clearInterval(loader)
+    }
   }, [])
 
   return (
