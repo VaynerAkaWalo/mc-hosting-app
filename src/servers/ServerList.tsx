@@ -17,7 +17,7 @@ export function ServerList() {
     const data = await res.json()
 
     setServers([])
-    await data.forEach(item => {
+    await data.forEach((item: { name: string; IP: string; remainingTime: string; }) => {
       const activeServer: ServerSlot = {
         active: true,
         name: item.name,

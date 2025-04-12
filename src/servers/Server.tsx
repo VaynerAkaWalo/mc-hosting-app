@@ -1,12 +1,18 @@
-import * as React from "react";
-
 interface ServerReqeust {
   name: string
   image: string
   expireAfter: number
 }
 
-export function Server({id, active, name, ip, remainingTime}) {
+interface ServerProps {
+  id: number
+  active: boolean
+  name?: string
+  ip?: string
+  remainingTime?: string
+}
+
+export function Server({id, active, name, ip, remainingTime}: ServerProps) {
   const provisionServer = () => {
     const request: ServerReqeust = {
       name: "server-" + id,
@@ -29,7 +35,7 @@ export function Server({id, active, name, ip, remainingTime}) {
   }
 
   const expire = () => {
-    if (remainingTime === "0s") {
+    if (!remainingTime || remainingTime === "0s") {
       return "soon"
     }
 
