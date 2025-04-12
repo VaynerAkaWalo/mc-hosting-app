@@ -1,5 +1,4 @@
-import {useState} from "react";
-import {Notification} from "./Notification.tsx";
+import {Link} from "react-router-dom";
 
 interface ServerReqeust {
   name: string
@@ -16,31 +15,6 @@ interface ServerProps {
 }
 
 export function Server({id, active, name, ip, remainingTime}: ServerProps) {
-  const [showNotification, setShowNotification] = useState<boolean>(false)
-
-  const provisionServer = () => {
-    const request: ServerReqeust = {
-      name: "server-" + id,
-      image: "ghcr.io/thijmengthn/papermc:latest",
-      expireAfter: 300000
-    }
-
-    fetch("https://blamedevs.com/mc-server-manager/servers", {
-      method: "POST",
-      body: JSON.stringify(request)
-    })
-
-    setShowNotification(true)
-    setTimeout(() => setShowNotification(false), 2000)
-  }
-
-  const inactive = () => {
-    return (
-      <div className="flex h-full justify-center items-center">
-        <button type="button" className="bg-zinc-300 hover:bg-zinc-500 hover:text-gray-200 border-t-2 border-l-2 border-b-4 border-r-4 border-zinc-500 h-1/4 px-2" onClick={provisionServer}>Claim server slot</button>
-      </div>
-    )
-  }
 
   const expire = () => {
     if (!remainingTime || remainingTime === "0s") {
@@ -65,10 +39,12 @@ export function Server({id, active, name, ip, remainingTime}: ServerProps) {
   }
 
   return (
-    <div className="border-zinc-500 bg-zinc-400 border-t-4 border-l-4 border-b-8 border-r-8 w-full h-full my-3">
-      {!active && inactive()}
+    <div className="border-zinc-500 bg-stone-800 text-zinc-300 border-t-2 border-l-2 border-b-4 border-r-4 w-full h-full my-3">
+      {!active &&
+        <div className="flex h-full justify-center items-center">
+            <Link className="bg-zinc-500 hover:bg-zinc-600 hover:text-gray-200 py-2 px-2 text-center w-1/3" to={"/server-creator"}>Claim server</Link>
+        </div>}
       {active && activeServer()}
-      {showNotification && <Notification message={"Your server will be started shortly"}/>}
     </div>
   )
 }

@@ -13,7 +13,39 @@
   bottom: 20px;
   right: 20px;
 
-  background-color: var(--color-zinc-400);
+  background-color: var(--color-stone-800);
+  border-color: var(--color-zinc-500);
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  border-left-width: 2px;
+  border-top-width: 2px;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: var(--color-stone-800);
+  border-color: var(--color-zinc-500);
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  border-left-width: 2px;
+  border-top-width: 2px;
+}
+
+.mc-border {
+  border-color: var(--color-zinc-500);
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  border-left-width: 2px;
+  border-top-width: 2px;
+}
+
+.input-style {
+  padding: 4px 4px 4px 4px;
+  background-color: var(--color-stone-800);
   border-color: var(--color-zinc-500);
   border-bottom-width: 4px;
   border-right-width: 4px;
