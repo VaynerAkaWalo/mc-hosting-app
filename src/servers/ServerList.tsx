@@ -1,12 +1,50 @@
 import {Server} from "./Server.tsx";
+import * as React from "react";
+import {useEffect} from "react";
+
+interface ServerSlot {
+  active: boolean,
+  name?: string,
+  ip?: string
+  remainingTime?: string
+}
 
 export function ServerList() {
+  const [servers, setServers] = React.useState<ServerSlot[]>([])
+
+  const loadServers = async () => {
+    const res = await fetch("https://blamedevs.com/mc-server-manager/servers")
+    const data = await res.json()
+
+    setServers([])
+    await data.forEach(item => {
+      const activeServer: ServerSlot = {
+        active: true,
+        name: item.name,
+        ip: item.IP,
+        remainingTime: item.remainingTime
+      }
+
+      setServers(prev => ([...prev, activeServer]))
+    })
+
+    for (let i = data.length; i < 3; i++) {
+      const emptySlot: ServerSlot = {
+        active: false
+      }
+      setServers(prev => ([...prev, emptySlot]))
+    }
+  }
+
+  useEffect(() => {
+    loadServers()
+  }, [])
 
   return (
     <ul className="flex flex-col w-1/2 h-1/2 justify-evenly">
-      <Server/>
-      <Server/>
-      <Server/>
+      {servers.map((server, index) => (
+        <Server id={index} active={server.active} ip={server.ip} name={server.name} remainingTime={server.remainingTime}/>
+      ))}
     </ul>
   )
 }
