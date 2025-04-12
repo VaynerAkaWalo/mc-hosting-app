@@ -6,9 +6,10 @@ interface ServerProps {
   name?: string
   ip?: string
   remainingTime?: string
+  status?: string
 }
 
-export function Server({active, name, ip, remainingTime}: ServerProps) {
+export function Server({active, name, ip, remainingTime, status}: ServerProps) {
 
   const expire = () => {
     if (!remainingTime || remainingTime === "0s") {
@@ -28,6 +29,7 @@ export function Server({active, name, ip, remainingTime}: ServerProps) {
         <li>Name: {name}</li>
         <li>Expire: {expire()}</li>
         <li>Server IP: {ip}</li>
+        <li>Status: {status}</li>
       </ul>
     )
   }

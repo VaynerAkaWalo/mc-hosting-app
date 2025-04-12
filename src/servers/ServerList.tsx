@@ -8,13 +8,14 @@ interface ServerSlot {
   name?: string,
   ip?: string
   remainingTime?: string
+  status?: string
 }
 
 export function ServerList() {
   const [servers, setServers] = React.useState<ServerSlot[]>([])
 
   const loadServers = async () => {
-    const { data: servers } = await ManagerClient.listServers()
+    const {data: servers} = await ManagerClient.listServers()
 
     setServers([])
     servers.forEach(server => {
@@ -22,7 +23,8 @@ export function ServerList() {
         active: true,
         name: server.name,
         ip: server.IP,
-        remainingTime: server.remainingTime
+        remainingTime: server.remainingTime,
+        status: server.status
       }
 
       setServers(prev => ([...prev, activeServer]))
@@ -47,7 +49,8 @@ export function ServerList() {
   return (
     <ul className="flex flex-col w-2/5 h-1/2 justify-evenly">
       {servers.map((server, index) => (
-        <Server id={index} active={server.active} ip={server.ip} name={server.name} remainingTime={server.remainingTime}/>
+        <Server id={index} active={server.active} ip={server.ip} name={server.name} status={server.status}
+                remainingTime={server.remainingTime}/>
       ))}
     </ul>
   )

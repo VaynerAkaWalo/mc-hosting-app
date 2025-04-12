@@ -10,7 +10,8 @@ export interface CreateServerRequest {
 export interface ServerResponse {
   name: string,
   IP: string,
-  remainingTime: string
+  remainingTime: string,
+  status: string
 }
 
 class ServerManager {
