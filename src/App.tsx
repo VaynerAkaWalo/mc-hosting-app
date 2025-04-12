@@ -1,8 +1,10 @@
 import './App.css'
 import {Footer} from "./shared/Footer.tsx";
-import {Outlet} from "react-router-dom";
+import {Outlet, useOutletContext} from "react-router-dom";
 import {Notification} from "./shared/Notification.tsx";
 import {useEffect, useState} from "react";
+
+type NotificationContext =  { setNotificationMessage: React.Dispatch<React.SetStateAction<string>> }
 
 function App() {
   const [notificationMessage, setNotificationMessage] = useState<string>("")
@@ -25,12 +27,16 @@ function App() {
   return (
     <>
       <div className="h-screen flex justify-center items-center text-gray-700">
-        <Outlet context={[setNotificationMessage]}/>
+        <Outlet context={{ setNotificationMessage } satisfies NotificationContext } />
         {showNotification && <Notification message={notificationMessage}/>}
       </div>
       <Footer/>
     </>
   )
+}
+
+export function UpdateNotification() {
+  return useOutletContext<NotificationContext>()
 }
 
 export default App

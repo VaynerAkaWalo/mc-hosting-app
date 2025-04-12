@@ -1,14 +1,15 @@
 import Select, {PropsValue} from "react-select";
 import {ChangeEventHandler, useState} from "react";
-import {useNavigate, useOutletContext} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {CreateServerRequest, ManagerClient} from "../clients/ManagerClient.ts";
+import {UpdateNotification} from "../App.tsx";
 
 export function ServerCreator() {
   const [serverName, setServerName] = useState<string>("")
   const [version, setVersion] = useState<PropsValue<any>>("")
   const [reservationTime, setReservationTime] = useState<PropsValue<any>>("")
-  const [setNotificationMessage] = useOutletContext()
   const navigate = useNavigate();
+  const { setNotificationMessage } = UpdateNotification()
 
   const versions = [
     {
@@ -58,8 +59,8 @@ export function ServerCreator() {
     }
   ]
 
-  const updateServerName = (e: never) => {
-    setServerName(e.target.value)
+  const updateServerName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setServerName(e.currentTarget.value)
   }
 
   const handleVersionChange = (selectedVersion: ChangeEventHandler) => {
@@ -87,7 +88,7 @@ export function ServerCreator() {
     }
 
     const request: CreateServerRequest = {
-      name: serverName.replaceAll(" ", "-"),
+      name: serverName.replace(/ /g, '-'),
       version: version.value,
       expireAfter: reservationTime.value
     }

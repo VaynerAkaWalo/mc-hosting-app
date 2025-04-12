@@ -1,11 +1,5 @@
 import {Link} from "react-router-dom";
 
-interface ServerReqeust {
-  name: string
-  image: string
-  expireAfter: number
-}
-
 interface ServerProps {
   id: number
   active: boolean
@@ -14,7 +8,7 @@ interface ServerProps {
   remainingTime?: string
 }
 
-export function Server({id, active, name, ip, remainingTime}: ServerProps) {
+export function Server({active, name, ip, remainingTime}: ServerProps) {
 
   const expire = () => {
     if (!remainingTime || remainingTime === "0s") {
