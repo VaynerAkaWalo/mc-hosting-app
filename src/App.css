@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: Minecraft;
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("/fonts/Minecraft.otf") format("opentype");
+}
+
 .notification {
   position: fixed;
   bottom: 20px;
@@ -11,6 +19,4 @@
   border-right-width: 4px;
   border-left-width: 2px;
   border-top-width: 2px;
-
-
 }
