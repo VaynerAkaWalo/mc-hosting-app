@@ -3,7 +3,6 @@ import {AxiosPromise} from "axios";
 
 export interface CreateServerRequest {
   name: string,
-  version: string,
   expireAfter: number,
 }
 

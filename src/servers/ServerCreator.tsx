@@ -89,7 +89,6 @@ export function ServerCreator() {
 
     const request: CreateServerRequest = {
       name: serverName.replace(/ /g, '-'),
-      version: version.value,
       expireAfter: reservationTime.value
     }
     console.log(request)
