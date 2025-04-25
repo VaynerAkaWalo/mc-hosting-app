@@ -52,3 +52,14 @@
   border-left-width: 2px;
   border-top-width: 2px;
 }
+
+.header > li > a {
+  background-color: var(--color-stone-800);
+  color: var(--color-zinc-300);
+
+  padding: 8px 32px 8px 32px
+}
+
+.header > li > a:hover {
+  background-color: var(--color-stone-700);
+}

@@ -1,8 +1,9 @@
 import './App.css'
-import {Footer} from "./shared/Footer.tsx";
+import {Footer} from "./base/Footer.tsx";
 import {Outlet, useOutletContext} from "react-router-dom";
-import {Notification} from "./shared/Notification.tsx";
+import {Notification} from "./base/Notification.tsx";
 import {useEffect, useState} from "react";
+import {Header} from "./base/Header.tsx";
 
 type NotificationContext =  { setNotificationMessage: React.Dispatch<React.SetStateAction<string>> }
 
@@ -26,8 +27,11 @@ function App() {
 
   return (
     <>
-      <div className="h-screen flex justify-center items-center text-gray-700">
-        <Outlet context={{ setNotificationMessage } satisfies NotificationContext } />
+      <div className="h-screen flex flex-col text-gray-700">
+        <Header/>
+        <div className="flex h-full justify-center items-center">
+          <Outlet context={{ setNotificationMessage } satisfies NotificationContext } />
+        </div>
         {showNotification && <Notification message={notificationMessage}/>}
       </div>
       <Footer/>
