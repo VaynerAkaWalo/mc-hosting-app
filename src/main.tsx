@@ -4,9 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {ServerList} from "./servers/ServerList.tsx";
-import {ServerCreator} from "./servers/ServerCreator.tsx";
+import {ServerCreator} from "./creator/ServerCreator.tsx";
 import {TemplateList} from "./templates/TemplateList.tsx";
-import {TemplateServerCreator} from "./templates/TemplateConfigurator.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,10 +23,6 @@ const router = createBrowserRouter([
       {
         path: "/server-templates",
         element: <TemplateList/>
-      },
-      {
-        path: "/server-templates/creator",
-        element: <TemplateServerCreator/>
       }
     ]
   }

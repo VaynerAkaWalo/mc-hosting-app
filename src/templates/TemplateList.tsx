@@ -14,7 +14,7 @@ export function TemplateList() {
           VERSION: "1.21.3",
           TYPE: "FABRIC",
           MODRINTH_PROJECTS: "fabric-api,lithium",
-          MODS: "https://github.com/marin774/lockout-fabric/releases/download/v0.9.3/lockout-fabric-0.9.3.jar"
+          MODS: "https://github.com/marin774/lockout-fabric/releases/download/v0.9.3/lockout-fabric-0.9.3.jar",
         }
       }
     ])

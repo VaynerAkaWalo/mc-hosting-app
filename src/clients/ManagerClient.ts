@@ -3,8 +3,20 @@ import {AxiosPromise} from "axios";
 
 export interface CreateServerRequest {
   name: string,
-  opts: object,
+  opts: Opts,
   expireAfter: number,
+}
+
+export interface Opts {
+  ONLINE_MODE?: string
+  DIFFICULTY?: string
+  MAX_PLAYERS?: string
+  VERSION?: string
+  TYPE?: string
+  MODS?: string
+  MOTD?: string
+  OPS?: string
+  MODRINTH_PROJECTS?: string
 }
 
 export interface ServerResponse {

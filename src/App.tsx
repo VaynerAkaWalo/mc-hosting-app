@@ -14,7 +14,7 @@ function App() {
 
   const theme = createTheme({
     typography: {
-      fontFamily: "Minecraft, serif"
+      fontFamily: "Minecraft, serif",
     }
   })
 

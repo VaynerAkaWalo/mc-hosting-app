@@ -1,17 +1,18 @@
 import wordUrl from '../assets/world.png'
 import {useNavigate} from "react-router-dom";
+import {Opts} from "../clients/ManagerClient.ts";
 
 export interface template {
   name: string
   description: string
-  opts: object
+  opts: Opts
 }
 
 export function Template({name, description, opts}: template) {
   const navigate = useNavigate()
 
   const handleCreateServerFromTemplate = () => {
-    navigate("/server-templates/creator", { state: { name, opts } } )
+    navigate("/server-creator", { state: { templateName: name, templateOps: opts } } )
   }
 
   return (
