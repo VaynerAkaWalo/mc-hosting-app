@@ -91,7 +91,7 @@ export function TemplateServerCreator() {
       </div>
 
       <div className={"w-4/5 flex justify-evenly"}>
-        <button className={"w-2/5 bg-zinc-500 hover:bg-zinc-600 py-2"} onClick={() => navigate("/")}>Cancel</button>
+        <button className={"w-2/5 bg-zinc-500 hover:bg-zinc-600 py-2"} onClick={() => navigate("/server-templates")}>Cancel</button>
         <button className={"w-2/5 bg-zinc-500 hover:bg-zinc-600 py-2"} onClick={handleCreateServer}>Create server</button>
       </div>
     </div>
