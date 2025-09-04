@@ -4,7 +4,8 @@ import {AxiosPromise} from "axios";
 export interface CreateServerRequest {
   name: string,
   opts: Opts,
-  expireAfter: number,
+  duration: number,
+  tier: Tier
 }
 
 export interface Opts {
@@ -17,6 +18,12 @@ export interface Opts {
   MOTD?: string
   OPS?: string
   MODRINTH_PROJECTS?: string
+}
+
+export enum Tier {
+  wooden = "wooden",
+  iron = "iron",
+  diamond = "diamond"
 }
 
 export interface ServerResponse {

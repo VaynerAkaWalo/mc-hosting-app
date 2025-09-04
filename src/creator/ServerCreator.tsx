@@ -1,21 +1,24 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import Select, {SingleValue} from "react-select";
 import {useEffect, useReducer, useState} from "react";
-import {Checkbox, FormControlLabel} from "@mui/material";
+import {Checkbox, FormControlLabel, Tooltip} from "@mui/material";
 import {sanitizeString} from "../utils/StringSanitizer.ts";
 import {UpdateNotification} from "../App.tsx";
-import {CreateServerRequest, ManagerClient, Opts} from "../clients/ManagerClient.ts";
+import {CreateServerRequest, ManagerClient, Opts, Tier} from "../clients/ManagerClient.ts";
+import * as React from "react";
 
 enum CreatorTab {
   BASIC,
   ADVANCED,
-  PLAYERS
+  PLAYERS,
+  TIER,
 }
 
 interface Server {
   name: string
   opts: Opts
-  expireTime: number
+  duration: number
+  tier: Tier,
 }
 
 const initialServer: Server = {
@@ -25,22 +28,26 @@ const initialServer: Server = {
     MAX_PLAYERS: "20",
     DIFFICULTY: "normal"
   },
-  expireTime: 0
+  duration: 0,
+  tier: Tier.iron,
 }
 
 type ServerUpdateAction =
   | { type: 'UPDATE_NAME'; payload: string }
   | { type: 'UPDATE_EXPIRE_TIME'; payload: number }
   | { type: 'UPDATE_OPTS'; payload: Partial<Opts> }
+  | { type: 'UPDATE_TIER'; payload: Tier}
 
 function serverReducer(state: Server, action: ServerUpdateAction): Server {
   switch (action.type) {
     case "UPDATE_NAME":
       return {...state, name: action.payload}
     case "UPDATE_EXPIRE_TIME":
-      return {...state, expireTime: action.payload}
+      return {...state, duration: action.payload}
     case "UPDATE_OPTS":
       return {...state, opts: {...state.opts, ...action.payload}}
+    case "UPDATE_TIER":
+      return {...state, tier: action.payload}
   }
 }
 
@@ -122,7 +129,7 @@ export function ServerCreator() {
 
         <div className={"w-1/2"}>
           <label htmlFor={"server-reservation-time-select"}>Select reservation time</label>
-          <Select id={"server-reservation-time-select"} className={"text-zinc-800"} options={reservationTimeOptions} onChange={updateReservationTime} value={reservationTimeOptions.find(option => option.value === state.expireTime)}/>
+          <Select id={"server-reservation-time-select"} className={"text-zinc-800"} options={reservationTimeOptions} onChange={updateReservationTime} value={reservationTimeOptions.find(option => option.value === state.duration)}/>
         </div>
       </>
     )
@@ -210,13 +217,51 @@ export function ServerCreator() {
     )
   }
 
+  const tierSettings = () => {
+
+    const updateTier = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value as Tier
+      dispatch({type: "UPDATE_TIER", payload: newValue})
+    }
+
+    return (
+     <>
+       <div>
+         <label className={"text-center"} htmlFor={"tier-settings"}>Select server tier</label>
+         <div id={"tier-settings"} className={"flex flex-row"}>
+           <Tooltip title={"When chunks are already generated"}>
+             <FormControlLabel control={<Checkbox value={Tier.wooden} checked={state.tier === Tier.wooden} onChange={updateTier}/>} label="Wooden"/>
+           </Tooltip>
+           <Tooltip title={"Default option, should handle up to 10 players"}>
+             <FormControlLabel control={<Checkbox value={Tier.iron} checked={state.tier === Tier.iron} onChange={updateTier}/>} label="Iron"/>
+           </Tooltip>
+           <Tooltip title={"Best for large servers with intensive chunk generation"}>
+             <FormControlLabel control={<Checkbox value={Tier.diamond} checked={state.tier === Tier.diamond} onChange={updateTier}/>} label="Diamond"/>
+           </Tooltip>
+         </div>
+       </div>
+       <div>
+         <label className={"text-center"} htmlFor={"optimization-settings"}>Select server type</label>
+         <div id={"optimization-settings"} className={"flex flex-row"}>
+           <Tooltip title={"Default option, uses vanilla server"}>
+             <FormControlLabel control={<Checkbox checked={true} value={"vanilla"}/>} label="Vanilla"/>
+           </Tooltip>
+           <Tooltip title={"Highly optimized fabric server, gameplay should not be affected"}>
+             <FormControlLabel control={<Checkbox checked={false} value={"fabric"}/>} label="Fabric"/>
+           </Tooltip>
+         </div>
+       </div>
+     </>
+    )
+  }
+
   const createServer = async () => {
     if (state.name === "" || state.name.length < 3 || state.name.length > 25) {
       setNotificationMessage("Server name must have between 3 and 25 characters")
       return
     }
 
-    if (state.expireTime === 0) {
+    if (state.duration === 0) {
       setNotificationMessage("Reservation time must be selected")
       return
     }
@@ -225,8 +270,9 @@ export function ServerCreator() {
 
     const request: CreateServerRequest = {
       name: state.name,
-      expireAfter: state.expireTime,
-      opts: sanitizedOpts
+      duration: state.duration,
+      opts: sanitizedOpts,
+      tier: state.tier,
     }
 
     await ManagerClient.createServer(request).catch(err => {
@@ -242,6 +288,8 @@ export function ServerCreator() {
       <ul className="flex flex-row justify-evenly border-b-2 border-zinc-500">
         <button className="button" value={CreatorTab.BASIC} onClick={() => setActiveTab(CreatorTab.BASIC)}>Basic
         </button>
+        <button className="button" value={CreatorTab.TIER} onClick={() => setActiveTab(CreatorTab.TIER)}>Tier
+        </button>
         <button className="button" value={CreatorTab.ADVANCED}
                 onClick={() => setActiveTab(CreatorTab.ADVANCED)}>Advanced
         </button>
@@ -252,6 +300,7 @@ export function ServerCreator() {
         {activeTab === CreatorTab.BASIC && basicSettings()}
         {activeTab === CreatorTab.ADVANCED && advancedSettings()}
         {activeTab === CreatorTab.PLAYERS && playerSettings()}
+        {activeTab === CreatorTab.TIER && tierSettings()}
       </div>
       <div className={"flex items-center justify-evenly w-full pb-6"}>
         <button className={"w-2/5 bg-zinc-500 hover:bg-zinc-600 py-2"} onClick={() => navigate("/")}>Cancel</button>
