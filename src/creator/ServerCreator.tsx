@@ -71,20 +71,20 @@ export function ServerCreator() {
   const basicSettings = () => {
     const reservationTimeOptions = [
       {
-        value: 300000,
-        label: "5min"
+        value: 1200000,
+        label: "20min"
       },
       {
-        value: 900000,
-        label: "15min"
+        value: 2700000,
+        label: "40min"
       },
       {
-        value: 3600000,
-        label: "1h"
+        value: 9000000,
+        label: "2.5h"
       },
       {
-        value: 10800000,
-        label: "3h"
+        value: 30000000,
+        label: "5.5h"
       }
     ]
 
