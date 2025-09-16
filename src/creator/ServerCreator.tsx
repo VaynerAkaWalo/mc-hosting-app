@@ -1,11 +1,11 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import Select, {SingleValue} from "react-select";
+import * as React from "react";
 import {useEffect, useReducer, useState} from "react";
 import {Checkbox, FormControlLabel, Tooltip} from "@mui/material";
 import {sanitizeString} from "../utils/StringSanitizer.ts";
 import {UpdateNotification} from "../App.tsx";
 import {CreateServerRequest, ManagerClient, Opts, Tier} from "../clients/ManagerClient.ts";
-import * as React from "react";
 
 enum CreatorTab {
   BASIC,
@@ -28,7 +28,7 @@ const initialServer: Server = {
     MAX_PLAYERS: "20",
     DIFFICULTY: "normal"
   },
-  duration: 0,
+  duration: 2_700_000,
   tier: Tier.iron,
 }
 
@@ -36,7 +36,7 @@ type ServerUpdateAction =
   | { type: 'UPDATE_NAME'; payload: string }
   | { type: 'UPDATE_EXPIRE_TIME'; payload: number }
   | { type: 'UPDATE_OPTS'; payload: Partial<Opts> }
-  | { type: 'UPDATE_TIER'; payload: Tier}
+  | { type: 'UPDATE_TIER'; payload: Tier }
 
 function serverReducer(state: Server, action: ServerUpdateAction): Server {
   switch (action.type) {
@@ -54,8 +54,8 @@ function serverReducer(state: Server, action: ServerUpdateAction): Server {
 export function ServerCreator() {
   const [activeTab, setActiveTab] = useState<CreatorTab>(CreatorTab.BASIC)
   const [state, dispatch] = useReducer(serverReducer, initialServer)
-  const { setNotificationMessage } = UpdateNotification()
-  const { templateName, templateOps } = useLocation().state || {}
+  const {setNotificationMessage} = UpdateNotification()
+  const {templateName, templateOps} = useLocation().state || {}
   const navigate = useNavigate()
 
   function isTemplated(): boolean {
@@ -64,34 +64,34 @@ export function ServerCreator() {
 
   useEffect(() => {
     if (isTemplated()) {
-      dispatch({ type: "UPDATE_OPTS", payload: templateOps})
+      dispatch({type: "UPDATE_OPTS", payload: templateOps})
     }
   }, []);
 
   const basicSettings = () => {
     const reservationTimeOptions = [
       {
-        value: 1200000,
+        value: 1_200_000,
         label: "20min"
       },
       {
-        value: 2700000,
-        label: "40min"
+        value: 2_700_000,
+        label: "45min"
       },
       {
-        value: 9000000,
-        label: "2.5h"
+        value: 14_400_000,
+        label: "4h"
       },
       {
-        value: 30000000,
-        label: "5.5h"
+        value: 43_200_000,
+        label: "12h"
       }
     ]
 
     const updateName = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawName = e.target.value
 
-      dispatch({ type: "UPDATE_NAME", payload: sanitizeString(rawName)})
+      dispatch({type: "UPDATE_NAME", payload: sanitizeString(rawName)})
     }
 
     function getVersion(): string {
@@ -108,28 +108,32 @@ export function ServerCreator() {
         return
       }
       const version = e.target.value
-      dispatch({ type: "UPDATE_OPTS", payload: {VERSION: version}})
+      dispatch({type: "UPDATE_OPTS", payload: {VERSION: version}})
     }
 
-    const updateReservationTime = (selectedReservationTime: SingleValue<{value: number}>) => {
-      dispatch({ type: "UPDATE_EXPIRE_TIME", payload: selectedReservationTime?.value || 0})
+    const updateReservationTime = (selectedReservationTime: SingleValue<{ value: number }>) => {
+      dispatch({type: "UPDATE_EXPIRE_TIME", payload: selectedReservationTime?.value || 0})
     }
 
     return (
       <>
         <div className="flex flex-col w-1/2">
-          <label htmlFor="server-name-input">Type your server name</label>
-          <input className={"input-style"} id={"server-name-input"} type={"text"} placeholder={"Server name"} value={state.name} onChange={updateName}/>
+          <label htmlFor="server-name-input">Server name</label>
+          <input className="input-style" id="server-name-input" type="text" placeholder="My Minecraft Server"
+                 value={state.name} onChange={updateName}/>
         </div>
 
         <div className="flex flex-col w-1/2">
-          <label htmlFor="server-version">Type version</label>
-          <input className="input-style" id="server-version" type="text" placeholder="Leave blank for latest version" value={getVersion()} onChange={updateVersion}/>
+          <label htmlFor="server-version">Server version</label>
+          <input className="input-style" id="server-version" type="text" placeholder="Latest Version"
+                 value={getVersion()} onChange={updateVersion}/>
         </div>
 
         <div className={"w-1/2"}>
           <label htmlFor={"server-reservation-time-select"}>Select reservation time</label>
-          <Select id={"server-reservation-time-select"} className={"text-zinc-800"} options={reservationTimeOptions} onChange={updateReservationTime} value={reservationTimeOptions.find(option => option.value === state.duration)}/>
+          <Select id={"server-reservation-time-select"} className={"text-zinc-800"} options={reservationTimeOptions}
+                  onChange={updateReservationTime}
+                  value={reservationTimeOptions.find(option => option.value === state.duration)}/>
         </div>
       </>
     )
@@ -158,23 +162,26 @@ export function ServerCreator() {
     const updateMessageOfDay = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawMessage = e.target.value
 
-      dispatch({ type: "UPDATE_OPTS", payload: {MOTD: sanitizeString(rawMessage)}})
+      dispatch({type: "UPDATE_OPTS", payload: {MOTD: sanitizeString(rawMessage)}})
     }
 
-    const updateDifficulty = (selectedDifficulty: SingleValue<{value: string}>) => {
-      dispatch({ type: "UPDATE_OPTS", payload: {DIFFICULTY: selectedDifficulty?.value}})
+    const updateDifficulty = (selectedDifficulty: SingleValue<{ value: string }>) => {
+      dispatch({type: "UPDATE_OPTS", payload: {DIFFICULTY: selectedDifficulty?.value}})
     }
 
     return (
       <>
         <div className="flex flex-col w-1/2">
-          <label htmlFor="message-of-the-day">Type message of the day</label>
-          <input className={"input-style"} id={"message-of-the-day"} type={"text"} placeholder={"Message of the day"} value={state.opts.MOTD} onChange={updateMessageOfDay}/>
+          <label htmlFor="message-of-the-day">Message of the day</label>
+          <input className={"input-style"} id={"message-of-the-day"} type={"text"} placeholder={"Welcome to the server!"}
+                 value={state.opts.MOTD} onChange={updateMessageOfDay}/>
         </div>
 
         <div className={"w-1/2"}>
-          <label htmlFor={"server-difficulty"}>Select difficulty</label>
-          <Select id={"server-difficulty"} className={"text-zinc-800"} options={difficultOptions} onChange={updateDifficulty} value={difficultOptions.find(option => option.value === state.opts.DIFFICULTY)}/>
+          <label htmlFor={"server-difficulty"}>Server difficulty</label>
+          <Select id={"server-difficulty"} className={"text-zinc-800"} options={difficultOptions}
+                  onChange={updateDifficulty}
+                  value={difficultOptions.find(option => option.value === state.opts.DIFFICULTY)}/>
         </div>
       </>
     )
@@ -202,7 +209,8 @@ export function ServerCreator() {
       <>
         <div className="flex flex-col w-1/2">
           <label htmlFor="player-limit">Player limit</label>
-          <input className="input-style text-right" id="player-limit" type="text" value={state.opts.MAX_PLAYERS} onChange={updateMaxPlayers}/>
+          <input className="input-style text-right" id="player-limit" type="text" value={state.opts.MAX_PLAYERS}
+                 onChange={updateMaxPlayers}/>
         </div>
 
         <div className="flex flex-col w-1/2">
@@ -211,7 +219,8 @@ export function ServerCreator() {
         </div>
 
         <div className={"flex flex-row items-center justify-evenly w-1/2"}>
-          <FormControlLabel control={<Checkbox checked={state.opts.ONLINE_MODE === 'true'} onClick={toggleOnlineMode}/>} label="Online mode"/>
+          <FormControlLabel control={<Checkbox checked={state.opts.ONLINE_MODE === 'true'} onClick={toggleOnlineMode}/>}
+                            label="Online mode"/>
         </div>
       </>
     )
@@ -225,33 +234,39 @@ export function ServerCreator() {
     }
 
     return (
-     <>
-       <div>
-         <label className={"text-center"} htmlFor={"tier-settings"}>Select server tier</label>
-         <div id={"tier-settings"} className={"flex flex-row"}>
-           <Tooltip title={"When chunks are already generated"}>
-             <FormControlLabel control={<Checkbox value={Tier.wooden} checked={state.tier === Tier.wooden} onChange={updateTier}/>} label="Wooden"/>
-           </Tooltip>
-           <Tooltip title={"Default option, should handle up to 10 players"}>
-             <FormControlLabel control={<Checkbox value={Tier.iron} checked={state.tier === Tier.iron} onChange={updateTier}/>} label="Iron"/>
-           </Tooltip>
-           <Tooltip title={"Best for large servers with intensive chunk generation"}>
-             <FormControlLabel control={<Checkbox value={Tier.diamond} checked={state.tier === Tier.diamond} onChange={updateTier}/>} label="Diamond"/>
-           </Tooltip>
-         </div>
-       </div>
-       <div>
-         <label className={"text-center"} htmlFor={"optimization-settings"}>Select server type</label>
-         <div id={"optimization-settings"} className={"flex flex-row"}>
-           <Tooltip title={"Default option, uses vanilla server"}>
-             <FormControlLabel control={<Checkbox checked={true} value={"vanilla"}/>} label="Vanilla"/>
-           </Tooltip>
-           <Tooltip title={"Highly optimized fabric server, gameplay should not be affected"}>
-             <FormControlLabel control={<Checkbox checked={false} value={"fabric"}/>} label="Fabric"/>
-           </Tooltip>
-         </div>
-       </div>
-     </>
+      <>
+        <div>
+          <label className={"text-center"} htmlFor={"tier-settings"}>Server tier</label>
+          <div id={"tier-settings"} className={"flex flex-row"}>
+            <Tooltip title={"When chunks are already generated"}>
+              <FormControlLabel
+                control={<Checkbox value={Tier.wooden} checked={state.tier === Tier.wooden} onChange={updateTier}/>}
+                label="Wooden"/>
+            </Tooltip>
+            <Tooltip title={"Default option, should handle up to 10 players"}>
+              <FormControlLabel
+                control={<Checkbox value={Tier.iron} checked={state.tier === Tier.iron} onChange={updateTier}/>}
+                label="Iron"/>
+            </Tooltip>
+            <Tooltip title={"Best for large servers with intensive chunk generation"}>
+              <FormControlLabel
+                control={<Checkbox value={Tier.diamond} checked={state.tier === Tier.diamond} onChange={updateTier}/>}
+                label="Diamond"/>
+            </Tooltip>
+          </div>
+        </div>
+        <div>
+          <label className={"text-center"} htmlFor={"optimization-settings"}>Server type</label>
+          <div id={"optimization-settings"} className={"flex flex-row"}>
+            <Tooltip title={"Default option, uses vanilla server"}>
+              <FormControlLabel control={<Checkbox checked={true} value={"vanilla"}/>} label="Vanilla"/>
+            </Tooltip>
+            <Tooltip title={"Highly optimized fabric server, gameplay should not be affected"}>
+              <FormControlLabel control={<Checkbox checked={false} value={"fabric"}/>} label="Fabric"/>
+            </Tooltip>
+          </div>
+        </div>
+      </>
     )
   }
 
